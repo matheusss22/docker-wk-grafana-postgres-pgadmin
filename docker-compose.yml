@@ -5,100 +5,54 @@ services:
   ######################################################################
   # Grafana
   grafana:
-
-    image: grafana/grafana-enterprise:latest
-    
     container_name: grafana
-    
-    environment:
-      GF_LOG_LEVEL: debug
-
-    ports:
-      - mode: ingress
-        target: 3000
-        published: "3000"
-        protocol: tcp
-
-    volumes:
-      - type: bind
-        source: '~/.grafana/grafana-storage'
-        target: /var/lib/grafana
-        bind:
-          create_host_path: true
-
-    networks:
-      postgres: null
-
+    image: grafana/grafana-enterprise:latest
     restart: always
-
     user: "0"
-
     tty: true
+    environment:
+      - GF_LOG_LEVEL=debug
+    ports:
+      - 3000:3000
+    volumes:
+      - ~/.grafana/grafana-storage:/var/lib/grafana
+    networks:
+      - postgres
 
   ######################################################################
   # Postgres
   postgres:
-
-    image: postgres:latest
-
     container_name: postgres
-
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
-    ports:
-      - mode: ingress
-        target: 5432
-        published: "5432"
-        protocol: tcp
-
-    volumes:
-      - type: bind
-        source: '~/.postgres/postgresql/data'
-        target: /var/lib/postgresql/data
-        bind:
-          create_host_path: true
-      
-    networks:
-      postgres: null
-
+    image: postgres:latest
     restart: always
-
     user: "0"
+    tty: true
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/.postgres/postgresql/data:/var/lib/postgresql/data
+    networks:
+      - postgres
 
   ######################################################################
   # PgAdmin
   pgadmin:
-
-    image: dpage/pgadmin4:latest
-    
     container_name: pgadmin4
-
-    environment:
-      PGADMIN_DEFAULT_EMAIL: 'root@gmail.com'
-      PGADMIN_DEFAULT_PASSWORD: 'root'
-    
+    image: dpage/pgadmin4:latest
     restart: always
-    
-    ports:
-      - mode: ingress
-        target: 80
-        published: "8080"
-        protocol: tcp
-
-
-    volumes:
-      - type: bind
-        source: '~/.postgres/pgadmin'
-        target: /var/lib/pgadmin
-        bind:
-          create_host_path: true
-
-    networks:
-      postgres: null
-
     user: "0"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL='root@gmail.com'
+      - PGADMIN_DEFAULT_PASSWORD='root'
+    ports:
+      - 8080:80
+    volumes:
+      - ~/.postgres/pgadmin:/var/lib/pgadmin
+    networks:
+      - postgres
 
 networks:
   postgres:
