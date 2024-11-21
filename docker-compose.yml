@@ -1,0 +1,106 @@
+name: workspace-grafana-postgres-pgadmin
+
+services:
+
+  ######################################################################
+  # Grafana
+  grafana:
+
+    image: grafana/grafana-enterprise:latest
+    
+    container_name: grafana
+    
+    environment:
+      GF_LOG_LEVEL: debug
+
+    ports:
+      - mode: ingress
+        target: 3000
+        published: "3000"
+        protocol: tcp
+
+    volumes:
+      - type: bind
+        source: '~/.grafana/grafana-storage'
+        target: /var/lib/grafana
+        bind:
+          create_host_path: true
+
+    networks:
+      postgres: null
+
+    restart: always
+
+    user: "0"
+
+    tty: true
+
+  ######################################################################
+  # Postgres
+  postgres:
+
+    image: postgres:latest
+
+    container_name: postgres
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5432"
+        protocol: tcp
+
+    volumes:
+      - type: bind
+        source: '~/.postgres/postgresql/data'
+        target: /var/lib/postgresql/data
+        bind:
+          create_host_path: true
+      
+    networks:
+      postgres: null
+
+    restart: always
+
+    user: "0"
+
+  ######################################################################
+  # PgAdmin
+  pgadmin:
+
+    image: dpage/pgadmin4:latest
+    
+    container_name: pgadmin4
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'root@gmail.com'
+      PGADMIN_DEFAULT_PASSWORD: 'root'
+    
+    restart: always
+    
+    ports:
+      - mode: ingress
+        target: 80
+        published: "8080"
+        protocol: tcp
+
+
+    volumes:
+      - type: bind
+        source: '~/.postgres/pgadmin'
+        target: /var/lib/pgadmin
+        bind:
+          create_host_path: true
+
+    networks:
+      postgres: null
+
+    user: "0"
+
+networks:
+  postgres:
+    driver: bridge
+    name: postgres
