@@ -23,7 +23,7 @@ services:
   # Postgres
   postgres:
     container_name: postgres
-    image: postgres:latest
+    image: postgres:15
     restart: always
     user: "0"
     tty: true
