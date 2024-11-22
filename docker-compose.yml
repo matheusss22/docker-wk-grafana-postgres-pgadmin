@@ -11,7 +11,7 @@ services:
     user: "0"
     tty: true
     environment:
-      - GF_LOG_LEVEL=debug
+      - GF_LOG_LEVEL=${GF_LOG_LEVEL}
     ports:
       - 3000:3000
     volumes:
@@ -28,8 +28,8 @@ services:
     user: "0"
     tty: true
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
     volumes:
@@ -45,8 +45,8 @@ services:
     restart: always
     user: "0"
     environment:
-      - PGADMIN_DEFAULT_EMAIL='root@gmail.com'
-      - PGADMIN_DEFAULT_PASSWORD='root'
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - 8080:80
     volumes:
